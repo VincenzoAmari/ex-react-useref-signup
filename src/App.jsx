@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import "./index.css";
 
 const letters = "abcdefghijklmnopqrstuvwxyz";
@@ -14,6 +14,28 @@ function App() {
   const [descrizione, setDescrizione] = useState("");
   const [error, setError] = useState("");
 
+  const eUserValida = useMemo(() => {
+    const chValido = user
+      .split("")
+      .every(
+        (ch) => letters.includes(ch.toLowerCase()) || numbers.includes(ch)
+      );
+    return chValido && user.trim().length >= 6;
+  }, [user]);
+
+  const ePasswordValida = useMemo(() => {
+    return (
+      password.trim().length >= 8 &&
+      password.split("").some((ch) => letters.includes(ch)) &&
+      password.split("").some((ch) => numbers.includes(ch)) &&
+      password.split("").some((ch) => symbols.includes(ch))
+    );
+  }, [password]);
+
+  const eDescrizioneValida = useMemo(() => {
+    return descrizione.trim().length >= 100 && descrizione.trim().length < 1000;
+  }, [descrizione]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -24,7 +46,10 @@ function App() {
       !specializzazione ||
       !anniEsperienza ||
       anniEsperienza <= 0 ||
-      !descrizione.trim()
+      !descrizione.trim() ||
+      !eUserValida ||
+      !ePasswordValida ||
+      !eDescrizioneValida
     ) {
       setError("Per favore, compila tutti i campi.");
       return;
@@ -69,6 +94,11 @@ function App() {
           value={user}
           onChange={(e) => setUser(e.target.value)}
         />
+        {user.trim() && (
+          <p style={{ color: eUserValida ? "green" : "red" }}>
+            {eUserValida ? "username valido" : " inserisci almeno 6 caratteri"}
+          </p>
+        )}
 
         <label>Password:</label>
         <input
@@ -77,6 +107,13 @@ function App() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        {password.trim() && (
+          <p style={{ color: ePasswordValida ? "green" : "red" }}>
+            {ePasswordValida
+              ? "password valido"
+              : " inserisci almeno 8 caratteri, ed almeno 1 lettera, numero, 1 simbolo"}
+          </p>
+        )}
 
         <label>Specializzazione:</label>
         <select
@@ -104,6 +141,15 @@ function App() {
           value={descrizione}
           onChange={(e) => setDescrizione(e.target.value)}
         />
+        {descrizione.trim() && (
+          <p style={{ color: eDescrizioneValida ? "green" : "red" }}>
+            {eDescrizioneValida
+              ? "descrizione valida"
+              : `minimo 100 caratteri massimo 1000 ${
+                  descrizione.trim().length
+                }`}
+          </p>
+        )}
 
         {error && <p className="form-error">{error}</p>}
 
