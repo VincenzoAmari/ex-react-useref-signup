@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 
+const letters = "abcdefghijklmnopqrstuvwxyz";
+const numbers = "0123456789";
+const symbols = "!@#$%^&*()-_=+[]{}|;:'\",.<>?/`~";
+
 function App() {
   const [nome, setNome] = useState("");
   const [user, setUser] = useState("");
@@ -21,6 +25,11 @@ function App() {
       !descrizione.trim()
     ) {
       setError("Per favore, compila tutti i campi.");
+      return;
+    }
+
+    if (isNaN(anniEsperienza) || parseInt(anniEsperienza) <= 0) {
+      setError("Gli anni di esperienza devono essere un numero positivo.");
       return;
     }
 
