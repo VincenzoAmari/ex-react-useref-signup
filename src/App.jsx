@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import "./index.css";
 
 const letters = "abcdefghijklmnopqrstuvwxyz";
@@ -6,12 +6,14 @@ const numbers = "0123456789";
 const symbols = "!@#$%^&*()-_=+[]{}|;:'\",.<>?/`~";
 
 function App() {
-  const [nome, setNome] = useState("");
+  const [descrizione, setDescrizione] = useState("");
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
-  const [specializzazione, setSpecializzazione] = useState("");
-  const [anniEsperienza, setAnniEsperienza] = useState("");
-  const [descrizione, setDescrizione] = useState("");
+
+  const nomeRef = useRef();
+  const specializzazioneRef = useRef();
+  const anniEsperienzaRef = useRef();
+
   const [error, setError] = useState("");
 
   const eUserValida = useMemo(() => {
@@ -38,6 +40,10 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const nome = nomeRef.current.value;
+    const specializzazione = specializzazioneRef.current.value;
+    const anniEsperienza = anniEsperienzaRef.current.value;
 
     if (
       !nome.trim() ||
@@ -66,11 +72,11 @@ function App() {
       descrizione,
     });
 
-    setNome("");
+    nomeRef.current.value = "";
+    specializzazioneRef.current.value = "";
+    anniEsperienzaRef.current.value = "";
     setUser("");
     setPassword("");
-    setSpecializzazione("");
-    setAnniEsperienza("");
     setDescrizione("");
   };
 
@@ -80,12 +86,7 @@ function App() {
         <h1 className="form-title">Form di registrazione</h1>
 
         <label>Nome completo:</label>
-        <input
-          className="form-input"
-          type="text"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-        />
+        <input className="form-input" type="text" ref={nomeRef} />
 
         <label>Username:</label>
         <input
@@ -116,11 +117,7 @@ function App() {
         )}
 
         <label>Specializzazione:</label>
-        <select
-          className="form-select"
-          value={specializzazione}
-          onChange={(e) => setSpecializzazione(e.target.value)}
-        >
+        <select className="form-select" ref={specializzazioneRef}>
           <option value="">-- Seleziona --</option>
           <option value="Full Stack">Full Stack</option>
           <option value="Frontend">Frontend</option>
@@ -128,12 +125,7 @@ function App() {
         </select>
 
         <label>Anni di esperienza:</label>
-        <input
-          className="form-input"
-          type="number"
-          value={anniEsperienza}
-          onChange={(e) => setAnniEsperienza(e.target.value)}
-        />
+        <input className="form-input" type="number" ref={anniEsperienzaRef} />
 
         <label>Descrizione:</label>
         <textarea
